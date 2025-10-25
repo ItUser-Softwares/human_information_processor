@@ -338,9 +338,39 @@ document.addEventListener('DOMContentLoaded', () => {
     // Entrance animations (use GSAP if present, otherwise rely on CSS/AOS)
     if (window.gsap) {
         try {
-            window.gsap.from('.svg-wrap', { autoAlpha: 0, y: 18, duration: 0.7, ease: 'power2.out' });
+            window.gsap.from('.svg-wrap', {
+                autoAlpha: 0,
+                y: 18,
+                scale: 0.95,
+                duration: 0.8,
+                ease: 'elastic.out(1, 0.5)'
+            });
             window.gsap.from('.label-btn', { autoAlpha: 0, y: 8, stagger: 0.06, duration: 0.45, ease: 'power2.out' });
             window.gsap.from('#info-panel', { autoAlpha: 0, y: 8, duration: 0.6, delay: 0.06 });
+
+            // Add hover animation for brain parts
+            document.querySelectorAll('.brain-part').forEach(part => {
+                part.addEventListener('mouseenter', () => {
+                    gsap.to(part, {
+                        scale: 1.02,
+                        duration: 0.3,
+                        ease: "power2.out"
+                    });
+                });
+                part.addEventListener('mouseleave', () => {
+                    gsap.to(part, {
+                        scale: 1,
+                        duration: 0.2,
+                        ease: "power2.inOut"
+                    });
+                });
+            });
+
+            // Make SVG slightly smaller
+            gsap.set('#brain-svg', {
+                scale: 0.9,
+                transformOrigin: 'center center'
+            });
         } catch (e) { /* ignore */ }
     }
 

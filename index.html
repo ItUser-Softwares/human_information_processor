@@ -19,10 +19,19 @@
       gap: 8px;
       flex-wrap: wrap;
       justify-content: center;
-      align-items: center
+      align-items: center;
+      /* ensure vertical centering */
     }
 
+    /* Make buttons use inline-flex so their content is vertically centered and stable */
     .label-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      /* prevent awkward wrapping that causes misalignment */
+      line-height: 1;
+      /* consistent height across lines */
       background: rgba(255, 255, 255, 0.04);
       color: var(--muted);
       border: 1px solid rgba(255, 255, 255, 0.03);
@@ -37,12 +46,12 @@
       transform: translateY(-4px);
       background: rgba(124, 92, 255, 0.14);
       color: #fff;
-      box-shadow: 0 6px 18px rgba(124, 92, 255, 0.08)
+      box-shadow: 0 6px 18px rgba(124, 92, 255, 0.08);
     }
 
     .label-btn:focus {
       outline: none;
-      box-shadow: 0 0 0 4px rgba(124, 92, 255, 0.08)
+      box-shadow: 0 0 0 4px rgba(124, 92, 255, 0.08);
     }
   </style>
   <title>Human Information Processor</title>
