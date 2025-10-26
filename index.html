@@ -13,6 +13,46 @@
   <!-- main stylesheet -->
   <link rel="stylesheet" href="style.css" />
   <style>
+    /* Popup styles */
+    .brain-popup {
+      position: absolute;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(124, 92, 255, 0.2);
+      border-radius: 12px;
+      padding: 12px 18px;
+      color: white;
+      font-size: 16px;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      max-width: 220px;
+      text-align: center;
+    }
+
+    .brain-popup.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .brain-popup .title {
+      font-weight: 700;
+      color: #7c5cff;
+      margin: 0 0 4px;
+      font-size: 18px;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .brain-popup .subtitle {
+      margin: 0;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 1.4;
+    }
+
     /* additional label/button styles injected to keep base file untouched */
     .label-bar {
       display: flex;
@@ -66,15 +106,23 @@
 
   <main class="container">
     <section class="hero">
-      <!-- Inline SVG: kept in the page so it can be interactive and responsive -->
-      <!-- (kept original shapes; info panel is outside the SVG for accessibility) -->
+      <!-- Popup for brain parts -->
+      <div id="brain-popup" class="brain-popup">
+        <h3 class="title"></h3>
+        <p class="subtitle"></p>
+      </div>
+
       <div class="svg-wrap" role="img" aria-label="Interactive brain diagram">
         <!-- BEGIN SVG -->
         <svg id="brain-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-          viewBox="-271.7260071800844 -121.11678710303741 952.5720522106903 700" width="952.5720522106903" height="700">
+          viewBox="-271.7260071800844 -121.11678710303741 1052.5720522106903 700" width="1052.5720522106903" height="700">
 
           <!-- Invisible background rectangle so clicks outside shapes clear selection -->
-          <rect id="bg-clearpad" x="-271.726" y="-121.116" width="952.572052" height="557.2965" />
+          <rect id="bg-clearpad" x="-271.726" y="-121.116" width="1052.572052" height="557.2965" />
+
+          <!-- Section Labels -->
+          <text x="-150" y="-60" class="brain-label" style="font-size: 20px; fill: white;">Top View</text>
+          <text x="350" y="-60" class="brain-label" style="font-size: 20px; fill: white;">Side View</text>
 
           <!-- TOP VIEW -->
           <path id="frontal_top" class="brain-part part-stroke" data-region="frontal"
@@ -123,10 +171,8 @@
         <!-- END SVG -->
       </div>
 
-      <!-- Info panel (outside SVG for responsive layout & accessibility) -->
-      <!-- Label bar (moved here, right after SVG): stylish clickable badges -->
-      <div class="label-bar"
-        style="max-width:900px; width:100%; margin-top:12px; display:flex; gap:8px; flex-wrap:wrap; justify-content:center;">
+      <!-- Label bar moved to bottom -->
+      <div class="label-bar">
         <button class="label-btn" data-region="working">Working memory</button>
         <button class="label-btn" data-region="shortterm">Short-term memory</button>
         <button class="label-btn" data-region="longterm">Long-term memory</button>
@@ -137,6 +183,7 @@
         <button class="label-btn" data-region="attention">Attention</button>
       </div>
 
+      <!-- Info panel (outside SVG for responsive layout & accessibility) -->
       <div id="info-panel" class="info-panel" aria-live="polite">
         <h2 id="infotitle">Click any brain region</h2>
         <p id="infodesc">Human information processor mapping — click a part to see name & function.</p>

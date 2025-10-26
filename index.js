@@ -1,4 +1,28 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const popup = document.getElementById('brain-popup');
+    const popupTitle = popup.querySelector('.title');
+    const popupSubtitle = popup.querySelector('.subtitle');
+
+    function updatePopup(event, region) {
+        const info = REGION_INFO[region];
+        if (!info) return;
+
+        const svgRect = document.getElementById('brain-svg').getBoundingClientRect();
+        const x = event.clientX - svgRect.left;
+        const y = event.clientY - svgRect.top;
+
+        popupTitle.textContent = info.name;
+        popupSubtitle.textContent = info.shortDesc || "Click to learn more";
+
+        popup.style.left = `${x + 20}px`;
+        popup.style.top = `${y - 20}px`;
+        popup.classList.add('show');
+    }
+
+    function hidePopup() {
+        popup.classList.remove('show');
+    }
+
     // Brain region connections map
     const REGION_CONNECTIONS = {
         "working": ["frontal", "parietal"],
@@ -218,12 +242,69 @@ document.addEventListener('DOMContentLoaded', () => {
     const infoKey = document.getElementById('infokey');
     const infoPanel = document.getElementById('info-panel');
 
+    // Typing effect controller: incrementing token to cancel previous typing
+    let _typingToken = 0;
+
+    /**
+     * typeText - types plain text into an element, optionally replacing with final HTML when complete.
+     * - el: DOM element to receive typed content (will use textContent while typing)
+     * - fullText: plain-text string to type
+     * - opts: { speed: number(ms per char), finalHtml: string|null }
+     * Cancels any previous typing by increasing the shared token.
+     */
+    function typeText(el, fullText, opts = {}) {
+        const speed = typeof opts.speed === 'number' ? opts.speed : 24;
+        const finalHtml = opts.finalHtml || null;
+
+        // Capture current global token for cancellation checks. Do NOT increment here
+        // so multiple elements can type in parallel. To cancel all active typings,
+        // increment `_typingToken` externally (e.g. when starting a new selection).
+        const token = _typingToken;
+
+        // Prepare element
+        if (!el) return;
+        el.classList.add('typing');
+        // Use textContent while typing to avoid injecting partial HTML
+        el.textContent = '';
+
+        let i = 0;
+        function step() {
+            // If a new typing session started, abort this one
+            if (token !== _typingToken) {
+                el.classList.remove('typing');
+                return;
+            }
+            i += 1;
+            el.textContent = fullText.slice(0, i);
+            if (i < fullText.length) {
+                setTimeout(step, speed);
+            } else {
+                // Completed typing. If finalHtml is provided, swap in the rich content
+                if (finalHtml) {
+                    // Small timeout to keep caret visible briefly
+                    setTimeout(() => {
+                        if (token !== _typingToken) return;
+                        el.innerHTML = finalHtml;
+                        el.classList.remove('typing');
+                    }, 80);
+                } else {
+                    // remove caret class
+                    setTimeout(() => el.classList.remove('typing'), 80);
+                }
+            }
+        }
+        step();
+    }
+
     function clearSelection() {
         parts.forEach(p => p.classList.remove('highlight'));
         parts.forEach(p => p.classList.remove('dim'));
+        // Cancel any active typing and reset display
+        _typingToken++;
         if (infoTitle) infoTitle.textContent = 'Click any brain region';
         if (infoDesc) infoDesc.textContent = 'Human information processor mapping — click a part to see name & function.';
         if (infoKey) infoKey.textContent = '';
+        hidePopup();
     }
 
     function selectRegion(region) {
@@ -248,8 +329,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const info = REGION_INFO[region];
         if (info) {
-            if (infoTitle) infoTitle.textContent = info.name;
-            if (infoDesc) infoDesc.innerHTML = info.desc;
+            // Immediately set the info panel content (no typing effect)
+            if (infoTitle) infoTitle.textContent = info.name || '';
+            if (infoDesc) infoDesc.innerHTML = info.desc || '';
             if (infoKey) {
                 const connections = REGION_CONNECTIONS[region];
                 const mappingText = info.mapping + (connections ?
@@ -287,10 +369,17 @@ document.addEventListener('DOMContentLoaded', () => {
         // make focusable
         try { p.setAttribute('tabindex', '0'); } catch (e) { }
 
+        p.addEventListener('mousemove', (e) => {
+            const region = p.getAttribute('data-region');
+            updatePopup(e, region);
+        });
+
+        p.addEventListener('mouseleave', hidePopup);
+
         p.addEventListener('click', (e) => {
             e.stopPropagation();
             const region = p.getAttribute('data-region');
-            selectRegion(region);
+            selectRegion(region, e);
         });
 
         p.addEventListener('keydown', (e) => {
