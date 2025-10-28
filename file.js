@@ -31,7 +31,8 @@ document.addEventListener('DOMContentLoaded', () => {
         "sensory": ["parietal", "occipital", "perceptual"],
         "motor": ["frontal", "cerebellum"],
         "cognitive": ["frontal"],
-        "attention": ["frontal", "parietal", "perceptual"]
+        "attention": ["frontal", "parietal", "perceptual"],
+        "perceptual": ["occipital", "parietal", "temporal"]
     };
 
     const REGION_INFO = {

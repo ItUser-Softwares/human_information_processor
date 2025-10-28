@@ -26,6 +26,7 @@
 /* Info box styles (inside SVG) */
 #info-box {
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    margin: 2px;
 }
 
 #info-rect {
@@ -206,14 +207,21 @@ body {
     border-radius: 12px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
     margin: 0 auto;
+    display: flex;
+    justify-content: center;
 }
 
 /* Make the SVG responsive */
 #brain-svg {
-    width: 100%;
+    width: 80%;
     height: auto;
-    display: block
+    display: block;
+    overflow: visible;
+    /* transform: translateX(200px); */
+    padding-left: 35%;
+    /* box-sizing: border-box; */
 }
+
 
 .info-panel {
     width: 100%;

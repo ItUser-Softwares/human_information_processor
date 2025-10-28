@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Google Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Syne:wght@700;800&family=Space+Grotesk:wght@700&display=swap"
+    rel="stylesheet">
+  <!-- AOS for subtle scroll animations -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+  <!-- main stylesheet -->
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Popup styles */
+    .brain-popup {
+      position: absolute;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(124, 92, 255, 0.2);
+      border-radius: 12px;
+      padding: 12px 18px;
+      color: white;
+      font-size: 16px;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      max-width: 220px;
+      text-align: center;
+    }
+
+    .brain-popup.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .brain-popup .title {
+      font-weight: 700;
+      color: #7c5cff;
+      margin: 0 0 4px;
+      font-size: 18px;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .brain-popup .subtitle {
+      margin: 0;
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.8);
+      line-height: 1.4;
+    }
+
+    /* additional label/button styles injected to keep base file untouched */
+    .label-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      /* ensure vertical centering */
+    }
+
+    /* Make buttons use inline-flex so their content is vertically centered and stable */
+    .label-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      /* prevent awkward wrapping that causes misalignment */
+      line-height: 1;
+      /* consistent height across lines */
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--muted);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: transform .14s ease, background .12s ease, color .12s ease, box-shadow .12s ease;
+    }
+
+    .label-btn:hover {
+      transform: translateY(-4px);
+      background: rgba(124, 92, 255, 0.14);
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(124, 92, 255, 0.08);
+    }
+
+    .label-btn:focus {
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(124, 92, 255, 0.08);
+    }
+  </style>
+  <title>Human Information Processor</title>
+</head>
+
+<body>
+  <!-- Title centered as requested (no header/navigation) -->
+  <div class="page-title">
+    <h1>Human Information Processor</h1>
+    <p class="tagline">Interactive brain mapping — click labels or regions to learn more</p>
+  </div>
+
+  <main class="container">
+    <section class="hero">
+      <!-- Popup for brain parts -->
+      <div id="brain-popup" class="brain-popup">
+        <h3 class="title"></h3>
+        <p class="subtitle"></p>
+      </div>
+
+      <div class="svg-wrap" role="img" aria-label="Interactive brain diagram">
+        <!-- BEGIN SVG -->
+        <svg id="brain-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+          viewBox="-271.7260071800844 -121.11678710303741 1052.5720522106903 700" width="1052.5720522106903" height="700">
+
+          <!-- Invisible background rectangle so clicks outside shapes clear selection -->
+          <rect id="bg-clearpad" x="-271.726" y="-121.116" width="1052.572052" height="557.2965" />
+
+          <!-- Section Labels -->
+          <text x="-150" y="-60" class="brain-label" style="font-size: 20px; fill: white;">Top View</text>
+          <text x="350" y="-60" class="brain-label" style="font-size: 20px; fill: white;">Side View</text>
+
+          <!-- TOP VIEW -->
+          <path id="frontal_top" class="brain-part part-stroke" data-region="frontal"
+            d="M -8.499019048704426 245.61664116627855 C 24.70280314450585 57.31975058374549, 21.916830692445487 -64.51603380448904, -80.53207014712359 -34.04272225546086 C -182.98097098669282 -3.5694107064326914, -221.72600718008442 147.3466990047998, -116.49113388845504 238.7091718440061 Z"
+            fill="#C92B2B" stroke="#2c3e50" stroke-width="2.5" />
+
+          <path id="parietal_top" class="brain-part part-stroke" data-region="parietal"
+            d="M -107.94504866555562 336.484473425336 C -175.5450486655556 285.78447342533593, -215.2436777240246 144.5687272806706, -74.14504866555562 184.38447342533595 C 19.51663132042755 171.7611721162756, 18.39095419664328 340.52303577692345, -40.345048665555616 319.58447342533594 Z"
+            fill="#06B6D4" stroke="#2c3e50" stroke-width="2.5" />
+
+          <path id="perceptual_top" class="brain-part part-stroke" data-region="perceptual"
+            d="M -74.01426032930506 100.25754332873196 C -151.93686118162572 64.06988180251152, -209.2142603293051 150.95754332873196, -163.6170022123671 220.0322005933492 C -74.01426032930506 252.35754332873196, 28.97124073679305 291.814899405491, 8.14352218668661 111.78846017308165 Z"
+            fill="#6B66DF" stroke="#4b4b4b" stroke-width="2" />
+
+          <path id="occipital_top" class="brain-part part-stroke" data-region="occipital"
+            d="M -142.92856525154673 283.79125384327784 C -95.12814684333635 283.7912538432777, 50.082075651709104 241.38869119237222, -3.2484147534083263 368.46416290548666 C -76.99339606140548 404.7336644693476, -132.4198252550376 386.17972592971455, -142.92856525154673 283.79125384327784 Z"
+            fill="#9FE6D0" stroke="#2c3e50" stroke-width="2.5" />
+
+          <!-- SIDE VIEW -->
+          <path id="frontal_side" class="brain-part part-stroke" data-region="frontal"
+            d="M 24.71618586699813 105.7915284619946 C 95.12130313778704 20.972765135768583, 172.11490654930088 -19.496318019881755, 178.937934267851 -27.556019512419027 C 242.0509406644395 -21.11678710303741, 212.08292360687022 -33.440880919668544, 254.3750344810706 -27.118919299199533 C 277.0509406644395 -71.11678710303741, 329.4603223275525 -27.38544381945532, 333.1383607070834 -29.944079213911607 C 368.37290228490843 -44.44301311583061, 360.2279129458894 -36.03149925655552, 386.31533298853327 -25.17862079173679 C 383.4048852273393 -19.44301311583058, 407.05094066443945 -41.116787103037396, 412.05094066443945 -21.11678710303741 L 417.05094066443945 -1.1167871030374101 L 443.49017307382104 29.736091361781376 L 472.6053116665716 104.08577153235709 L 475.39848863885294 224.49088880314596 L 387.05094066443945 113.88321289696259 L 367.05094066443945 128.8832128969626 L 347.05094066443945 133.8832128969626 L 322.0509406644395 133.8832128969626 L 279.0232221143329 164.8213792082632 L 276.81639908661435 253.01967345133352 L 51.038147487467285 197.1987779289456 Z"
+            fill="#C92B2B" stroke="#2c3e50" stroke-width="2.5" />
+
+          <path id="parietal_side" class="brain-part part-stroke" data-region="parietal"
+            d="M 274.8545738152538 -20.267931187605114 C 276.20851837815354 -26.739146539417476, 296.20851837815354 -36.739146539417476, 321.20851837815354 -41.739146539417476 C 346.20851837815354 -46.739146539417476, 371.20851837815354 -46.739146539417476, 396.20851837815354 -41.739146539417476 C 421.20851837815354 -36.739146539417476, 441.20851837815377 -26.739146539417476, 456.20851837815377 -11.739146539417476 C 471.20851837815377 3.260853460582524, 481.20851837815377 23.260853460582524, 486.20851837815377 48.260853460582524 L 486.20851837815377 73.26085346058252 L 481.20851837815377 98.26085346058252 L 486.56033074489125 138.72993661623283 L 456.20851837815377 133.26085346058252 L 436.20851837815377 143.26085346058252 L 411.20851837815354 148.26085346058252 L 386.20851837815354 148.26085346058252 L 361.20851837815354 143.26085346058252 L 341.20851837815354 133.26085346058252 L 321.20851837815354 118.26085346058252 L 306.20851837815354 98.26085346058252 L 291.20851837815354 73.26085346058252 L 281.20851837815354 48.260853460582524 L 276.20851837815354 23.260853460582524 L 266.20851837815354 8.260853460582524 Z"
+            fill="#06B6D4" stroke="#2c3e50" stroke-width="2.5" />
+
+          <path id="occipital_side" class="brain-part part-stroke" data-region="occipital"
+            d="M 596.2298403397747 67.87705815141408 L 597.8183264804995 72.40797499576374 L 602.8183264804993 99.96661039022001 C 601.8481772267678 122.40797499576374, 630.8460450306059 144.8493396013075, 625.8460450306061 169.8493396013075 C 620.8460450306063 194.8493396013075, 610.8460450306063 214.84933960130743, 595.8460450306063 229.8493396013075 C 580.8460450306063 244.84933960130743, 560.8460450306063 254.84933960130746, 535.8460450306054 254.84933960130746 L 510.8460450306057 252.84933960130746 L 485.8460450306057 244.84933960130743 L 465.8460450306057 229.8493396013075 L 450.8460450306057 209.8493396013075 L 440.8460450306057 184.8493396013075 L 435.8460450306057 159.8493396013075 L 435.8460450306057 134.8493396013075 L 431.46438191759927 104.61479802348228 L 435.494232663868 72.55722872710706 L 444.5240834101367 34.41223938808784 L 462.81832648049914 -4.1442638102063825 L 486.11256955086156 -7.997142275025169 L 521.3471111286867 -9.702899204662657 L 550.6115034527809 6.384520837981228 L 563.788475734231 24.060427021350108 L 578.6712049453186 53.55936092326911 L 591.2298403397747 61.73633320471899 Z"
+            fill="#9FE6D0" stroke="#2c3e50" stroke-width="2.5" />
+
+
+          <path id="temporal_side" class="brain-part part-stroke" data-region="temporal"
+            d="M 202.36175303202668 152.49411524933222 L 194.8605223767645 162.62869571191376 L 188.7227599278404 195.9058181691731 C 183.18150169048562 203.0966961433896, 148.02809054383982 219.83917308178493, 152.42612511156017 279.8377214278227 C 175.4038967109609 317.5073800633199, 213.06434287043305 316.3336763297618, 230.9158542913961 321.37000859919823 L 321.05562561325934 299.9224823013994 L 347.41230121523387 305.42935538984824 L 377.8247746939348 305.1439488249013 L 407.3690072843006 299.93450349489325 L 431.12096022127145 290.669260288159 L 449.0806335048465 277.3482192046984 L 461.24802713502555 259.97138024451164 L 467.6231411118088 238.53874340759816 L 468.20597543519654 213.05030869395821 L 463.86477099352356 188.4301148686528 L 454.599527786789 164.6781619316824 L 440.4102458149935 141.79444988304678 L 422.165165966472 124.70301748780648 L 399.86428824122373 113.40386474596201 L 373.50761263924954 107.89699165751321 L 348.01917792560954 107.31415733412533 L 323.9199286333051 114.60978503483531 L 272.99670307934645 122.03655502908893 L 249.06021367887234 126.01904417411728 L 212.2896340009325 136.47562727745876 Z"
+            fill="#48B8D8" stroke="#2c3e50" stroke-width="2.5" />
+
+          <path id="cerebellum_side" class="brain-part part-stroke" data-region="cerebellum"
+            d="M 604.0805866084313 244.58281508105165 L 594.9334650732501 220.93675964395143 L 572.2575588898812 203.2608534605824 C 516.3193925785802 188.14358267166992, 539.6989234954242 195.93675964395138, 529.8161942843369 195.93675964395138 C 466.2021217896675 181.43782574203246, 483.6115034527805 210.72993661623283, 464.6413541990492 204.64251657358906 C 458.46438191759927 220.72993661623295, 455.28740963614933 233.84720740514533, 455.9633158195184 226.7896381087705 C 454.9334650732497 265.7875059126082, 451.93346507324947 277.7875059126081, 452.9334650732497 290.7875059126081 C 453.9334650732497 303.7875059126081, 458.9334650732497 315.7875059126082, 466.9334650732497 325.7875059126081 L 479.9334650732497 335.7875059126081 L 496.93346507324947 342.7875059126082 L 516.9334650732496 345.7875059126081 L 536.9334650732494 345.78750591260797 L 556.9334650732501 342.7875059126081 L 574.9334650732503 335.7875059126081 L 589.9334650732503 325.7875059126081 L 599.9334650732503 310.7875059126081 L 604.9334650732503 295.78750591260797 L 604.9334650732501 275.7875059126081 Z"
+            fill="#FFEB8B" stroke="#2c3e50" stroke-width="2.5" />
+
+          <path id="perceptual_side" class="brain-part part-stroke" data-region="perceptual"
+            d="M 310.86016589386264 10.126122847435 L 301.71304435868143 -13.519932589665217 L 311.8588801479821 -45.262299618464084 C 223.09897186401196 -46.31310956194679, 246.47850278085633 -38.5199325896653, 236.59577356976894 -38.519932589665274 C 172.9817010750993 -53.01886649158422, 190.39108273821228 -23.726755617383844, 227.71091216251926 -28.961297195208886 C 218.12242602179452 -25.66705412484643, 228.59150917744472 -19.372811054484146, 233.53180768490762 -12.784324913758752 C 223.12029382563242 -9.60735263230896, 221.82605075526982 -1.0188664915840207, 234.7663492627326 2.599470395409611 C 225.5318076849075 29.245525832509855, 222.85590150153854 19.923564212040816, 237.6789292200886 40.15810578986594 L 243.00302303671975 74.89158126961004 L 232.7109121625195 133.9171676235546 L 246.74076290878799 131.7998968346421 L 264.18212751433174 130.09413990500443 L 279.06485672541913 124.5355045105483 L 321.7983322051635 127.77004608837339 L 321.4465198384257 111.799896834642 L 306.71304435868154 76.33081367899166 L 311.71304435868154 61.33081367899155 L 311.71304435868143 41.33081367899166 Z"
+            fill="#6B66DF" stroke="#4b4b4b" stroke-width="2" />
+
+        </svg>
+        <!-- END SVG -->
+      </div>
+
+      <!-- Label bar moved to bottom -->
+      <div class="label-bar">
+        <button class="label-btn" data-region="working">Working memory</button>
+        <button class="label-btn" data-region="shortterm">Short-term memory</button>
+        <button class="label-btn" data-region="longterm">Long-term memory</button>
+        <button class="label-btn" data-region="sensory">Sensory memory</button>
+        <button class="label-btn" data-region="perceptual">Perceptual system</button>
+        <button class="label-btn" data-region="motor">Motor system</button>
+        <button class="label-btn" data-region="cognitive">Cognitive system</button>
+        <button class="label-btn" data-region="attention">Attention</button>
+      </div>
+
+      <!-- Info panel (outside SVG for responsive layout & accessibility) -->
+      <div id="info-panel" class="info-panel" aria-live="polite">
+        <h2 id="infotitle">Click any brain region</h2>
+        <p id="infodesc">Human information processor mapping — click a part to see name & function.</p>
+        <p id="infokey" class="muted"></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <small>© 2025 Human Information Processor — Muhammad Ehtisham.</small>
+    </div>
+  </footer>
+
+  <!-- GSAP for selection animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+  <!-- AOS for subtle scroll/entry animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js" defer></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () { if (window.AOS) AOS.init(); });
+  </script>
+
+  <script src="index.js" defer></script>
+</body>
+
+</html>
